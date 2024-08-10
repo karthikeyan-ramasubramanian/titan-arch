@@ -1,0 +1,759 @@
+<!-- <!-- 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+
+  <style>
+    .custom-select {
+  position: relative;
+  width: 400px;
+  max-width: 100%;
+  font-size: 1.15rem;
+  color: #000;
+}
+
+.select-button {
+  width: 100%;
+  font-size: 1.15rem;
+  background-color: #fff;
+  padding: 0.675em 1em;
+  border: 1px solid #caced1;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.selected-value {
+  text-align: left;
+}
+
+.arrow {
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 6px solid #000;
+  transition: transform ease-in-out 0.3s;
+}
+
+.select-dropdown {
+  position: absolute;
+  list-style: none;
+  width: 100%;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  background-color: #fff;
+  border: 1px solid #caced1;
+  border-radius: 4px;
+  padding: 10px;
+  max-height: 200px;
+  overflow-y: auto;
+  transition: 0.5s ease;
+  margin: 0;
+  transform: scaleY(0);
+  opacity: 0;
+  visibility: hidden;
+}
+
+.select-dropdown:focus-within {
+  box-shadow: 0 10px 25px rgba(94, 108, 233, 0.6);
+}
+
+.select-dropdown li {
+  position: relative;
+  cursor: pointer;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.select-dropdown li label {
+  width: 100%;
+  padding: 8px 10px;
+  cursor: pointer;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.select-dropdown::-webkit-scrollbar {
+  width: 7px;
+}
+.select-dropdown::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 25px;
+}
+
+.select-dropdown::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 25px;
+}
+
+.select-dropdown li:hover,
+.select-dropdown input:checked ~ label {
+  background-color: #f2f2f2;
+}
+
+.select-dropdown input:focus ~ label {
+  background-color: #dfdfdf;
+}
+
+.select-dropdown input[type="radio"] {
+  position: absolute;
+  left: 0;
+  opacity: 0;
+}
+
+/* interactivity */
+
+.custom-select.active .arrow {
+  transform: rotate(180deg);
+}
+
+.custom-select.active .select-dropdown {
+  opacity: 1;
+  visibility: visible;
+  transform: scaleY(1);
+}
+
+/*=============
+Aesthetics 
+=========================*/
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+  </style>
+
+</head>
+<body>
+  <div class="custom-select">
+    <button class="select-button" role="combobox" aria-labelledby="select button"
+      aria-haspopup="listbox" aria-expanded="false" aria-controls="select-dropdown">
+      <span class="selected-value">Open this select menu</span>
+      <span class="arrow"></span>
+    </button>
+    <ul class="select-dropdown" role="listbox" id="select-dropdown">
+      <li role="option">
+        <label for="github">GitHub</label>
+      </li>
+      <li role="option">
+        <label for="instagram">Instagram</label>
+      </li>
+      <li role="option">
+        <label for="facebook">Facebook</label>
+      </li>
+      <li role="option">
+        <label for="linkedIn">LinkedIn</label>
+      </li>
+      <li role="option">
+        <label for="twitter">Twitter</label>
+      </li>
+      <li role="option">
+        <label for="reddit">Reddit</label>
+      </li>
+    </ul>
+  </div>
+  <div class="custom-select">
+    <button class="select-button" role="combobox" aria-labelledby="select button"
+      aria-haspopup="listbox" aria-expanded="false" aria-controls="select-dropdown">
+      <span class="selected-value">Open this select menu</span>
+      <span class="arrow"></span>
+    </button>
+    <ul class="select-dropdown" role="listbox" id="select-dropdown">
+      <li role="option">
+        <label for="github">GitHub</label>
+      </li>
+      <li role="option">
+        <label for="instagram">Instagram</label>
+      </li>
+      <li role="option">
+        <label for="facebook">Facebook</label>
+      </li>
+      <li role="option">
+        <label for="linkedIn">LinkedIn</label>
+      </li>
+      <li role="option">
+        <label for="twitter">Twitter</label>
+      </li>
+      <li role="option">
+        <label for="reddit">Reddit</label>
+      </li>
+    </ul>
+  </div>
+  
+  <link  href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet"
+  />
+  <script>
+    const customSelect = document.querySelector(".custom-select");
+const selectBtn = document.querySelector(".select-button");
+
+const selectedValue = document.querySelector(".selected-value");
+const optionsList = document.querySelectorAll(".select-dropdown li");
+
+// add click event to select button
+selectBtn.addEventListener("click", () => {
+  // add/remove active class on the container element
+  customSelect.classList.toggle("active");
+  // update the aria-expanded attribute based on the current state
+  selectBtn.setAttribute(
+    "aria-expanded",
+    selectBtn.getAttribute("aria-expanded") === "true" ? "false" : "true"
+  );
+});
+
+optionsList.forEach((option) => {
+  function handler(e) {
+    // Click Events
+    if (e.type === "click" && e.clientX !== 0 && e.clientY !== 0) {
+      selectedValue.textContent = this.children[1].textContent;
+      customSelect.classList.remove("active");
+    }
+    // Key Events
+    if (e.key === "Enter") {
+      selectedValue.textContent = this.textContent;
+      customSelect.classList.remove("active");
+    }
+  }
+
+  option.addEventListener("keyup", handler);
+  option.addEventListener("click", handler);
+});
+  </script>
+</body>
+</html> -->
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 100%;
+          width: 100%;
+        }
+
+        #allImgs {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
+          align-items: center;
+        }
+
+        #allImgs div {
+          padding: 20px;
+          margin: 20px;
+        }
+
+        /* Styles for the tilt block */
+        #tilt1, #tilt2, #tilt3, #tilt4, #tilt5, #tilt6, #tilt7, #tilt8, #tilt9, #tilt10, #tilt11, #tilt12, #tilt13, #tilt14, #tilt15, #tilt16, #tilt17, #tilt18, #tilt19, #tilt20, #tilt21, #tilt22, #tilt23, #tilt24, #tilt25, #tilt26, #tilt27, #tilt28, #tilt29, #tilt30, #tilt31, #tilt32, #tilt33 {
+          display: block;
+          height: 200px;
+          width: 300px;
+          padding: 20px;
+          background-color: grey;
+          margin: 0 auto;
+          transition: box-shadow 0.1s, transform 0.1s;
+          background-size: 100%;
+          background-repeat: no-repeat;
+        }
+        #tilt1:hover, #tilt2:hover, #tilt3:hover, #tilt4:hover, #tilt5:hover, #tilt6:hover, #tilt7:hover, #tilt8:hover, #tilt9:hover, #tilt10:hover, #tilt11:hover, #tilt12:hover, #tilt13:hover, #tilt14:hover, #tilt15:hover, #tilt16:hover, #tilt17:hover, #tilt18:hover, #tilt19:hover, #tilt20:hover, #tilt21:hover, #tilt22:hover, #tilt23:hover, #tilt24:hover, #tilt25:hover, #tilt26:hover, #tilt27:hover, #tilt28:hover, #tilt29:hover, #tilt30:hover, #tilt31:hover, #tilt32:hover, #tilt33:hover {
+          box-shadow: 0px 0px 30px rgba(0,0,0, 0.6);
+          cursor: pointer;
+        }
+
+    </style>
+</head>
+<body>
+  <div id="allImgs">
+    <div id="tilt1" style="background-image: url('./images/portfolio/portfolio-box1/pic1.jpeg');"></div>
+    <div id="tilt2" style="background-image: url('./images/portfolio/portfolio-box1/pic2.jpeg');"></div>
+    <div id="tilt3" style="background-image: url('./images/portfolio/portfolio-box1/pic3.jpeg');"></div>
+    <div id="tilt4" style="background-image: url('./images/portfolio/portfolio-box1/pic4.jpeg');"></div>
+    <div id="tilt5" style="background-image: url('./images/portfolio/portfolio-box1/pic5.jpeg');"></div>
+    <div id="tilt6" style="background-image: url('./images/portfolio/portfolio-box1/pic6.jpeg');"></div>
+    <div id="tilt1" style="background-image:url(images/portfolio/portfolio-box1/pic1.jpeg); "></div>
+    <div id="tilt2" style="background-image:url(images/portfolio/portfolio-box1/pic1.jpeg); "></div>
+    <div id="tilt3" style="background-image:url(images/portfolio/portfolio-box1/pic1.jpeg); "></div>
+    <div id="tilt4" style="background-image:url(images/portfolio/portfolio-box1/pic1.jpeg); "></div>
+    <div id="tilt5" style="background-image:url(images/portfolio/portfolio-box1/pic1.jpeg); "></div>
+    <div id="tilt6" style="background-image:url(images/portfolio/portfolio-box1/pic1.jpeg); "></div>
+    <div id="tilt7" style="background-image:url(images/portfolio/portfolio-box1/pic1.jpeg); "></div>
+    <div id="tilt8" style="background-image:url(images/portfolio/portfolio-box1/pic1.jpeg); "></div>
+    <div id="tilt9" style="background-image:url(images/portfolio/portfolio-box1/pic1.jpeg); "></div>
+    <div id="tilt10" style="background-image:url(images/portfolio/portfolio-box1/pic1.jpeg); "></div>
+    <div id="tilt11" style="background-image:url(images/portfolio/portfolio-box1/pic1.jpeg); "></div>
+    <div id="tilt12" style="background-image:url(images/portfolio/portfolio-box1/pic1.jpeg); "></div>
+    <div id="tilt13" style="background-image:url(images/portfolio/portfolio-box1/pic1.jpeg); "></div>
+    <div id="tilt14" style="background-image:url(images/portfolio/portfolio-box1/pic1.jpeg); "></div>
+    <div id="tilt15" style="background-image:url(images/portfolio/portfolio-box1/pic1.jpeg); "></div>
+    <div id="tilt16" style="background-image:url(images/portfolio/portfolio-box1/pic1.jpeg); "></div>
+    <div id="tilt17" style="background-image:url(images/portfolio/portfolio-box1/pic1.jpeg); "></div>
+    <div id="tilt18" style="background-image:url(images/portfolio/portfolio-box1/pic1.jpeg); "></div>
+    <div id="tilt19" style="background-image:url(images/portfolio/portfolio-box1/pic1.jpeg); "></div>
+    <div id="tilt20" style="background-image:url(images/portfolio/portfolio-box1/pic1.jpeg); "></div>
+    <div id="tilt21" style="background-image:url(images/portfolio/portfolio-box1/pic1.jpeg); "></div>
+    <div id="tilt22" style="background-image:url(images/portfolio/portfolio-box1/pic1.jpeg); "></div>
+    <div id="tilt23" style="background-image:url(images/portfolio/portfolio-box1/pic1.jpeg); "></div>
+    <div id="tilt24" style="background-image:url(images/portfolio/portfolio-box1/pic1.jpeg); "></div>
+    <div id="tilt25" style="background-image:url(images/portfolio/portfolio-box1/pic1.jpeg); "></div>
+    <div id="tilt26" style="background-image:url(images/portfolio/portfolio-box1/pic1.jpeg); "></div>
+    <div id="tilt27" style="background-image:url(images/portfolio/portfolio-box1/pic1.jpeg); "></div>
+    <div id="tilt28" style="background-image:url(images/portfolio/portfolio-box1/pic1.jpeg); "></div>
+    <div id="tilt29" style="background-image:url(images/portfolio/portfolio-box1/pic1.jpeg); "></div>
+    <div id="tilt30" style="background-image:url(images/portfolio/portfolio-box1/pic1.jpeg); "></div>
+    <div id="tilt31" style="background-image:url(images/portfolio/portfolio-box1/pic1.jpeg); "></div>
+    <div id="tilt32" style="background-image:url(images/portfolio/portfolio-box1/pic1.jpeg); "></div>
+    <div id="tilt33" style="background-image:url(images/portfolio/portfolio-box1/pic1.jpeg); "></div>
+  </div>
+    <script>
+      var i = 0;
+      const elm = [];
+      try{
+        while(true) {
+          tiltEff(document.getElementById(`tilt${++i}`));
+        }
+      } catch(err) {
+        console.log(err);
+      }
+  const height = document.getElementById('tilt1').clientHeight
+  const width = document.getElementById('tilt1').clientWidth
+
+  function tiltEff (elmt) {
+    elmt.addEventListener('mousemove', (e) => {
+      var xVal = e.layerX
+      var yVal = e.layerY
+      var yRotation = 20 * ((xVal - width / 2) / width)
+      var xRotation = -20 * ((yVal - height / 2) / height)
+      var string = 'perspective(500px) scale(1.1) rotateX(' + xRotation + 'deg) rotateY(' + yRotation + 'deg)';
+      elmt.style.transform = 'perspective(500px) scale(1.1) rotateX(' + xRotation + 'deg) rotateY(' + yRotation + 'deg)';
+    })
+    elmt.addEventListener('mouseout', () => {
+      elmt.style.transform = 'perspective(500px) scale(1) rotateX(0) rotateY(0)'
+    })
+    elmt.addEventListener('mousedown', () => {
+      elmt.style.transform = 'perspective(500px) scale(0.9) rotateX(0) rotateY(0)'
+    })
+    elmt.addEventListener('mouseup', () => {
+      elmt.style.transform = 'perspective(500px) scale(1.1) rotateX(0) rotateY(0)'
+    })
+  }
+    </script>
+
+    <!-- <script>
+        /* Store the element in el */
+        let el1 = document.getElementById('tilt1')
+        let el2 = document.getElementById('tilt2')
+        let el3 = document.getElementById('tilt3')
+        let el4 = document.getElementById('tilt4')
+        let el5 = document.getElementById('tilt5')
+        let el6 = document.getElementById('tilt6')
+
+/* Get the height and width of the element */
+const height = el1.clientHeight
+const width = el1.clientWidth
+
+  el1.addEventListener('mousemove', (e) => {
+      var xVal = e.layerX
+      var yVal = e.layerY
+      var yRotation = 20 * ((xVal - width / 2) / width)
+      var xRotation = -20 * ((yVal - height / 2) / height)
+      var string = 'perspective(500px) scale(1.1) rotateX(' + xRotation + 'deg) rotateY(' + yRotation + 'deg)'
+      el1.style.transform = string
+  })
+  el2.addEventListener('mousemove', (e) => {
+      var xVal = e.layerX
+      var yVal = e.layerY
+      var yRotation = 20 * ((xVal - width / 2) / width)
+      var xRotation = -20 * ((yVal - height / 2) / height)
+      var string = 'perspective(500px) scale(1.1) rotateX(' + xRotation + 'deg) rotateY(' + yRotation + 'deg)'
+      el2.style.transform = string
+  })
+  el3.addEventListener('mousemove', (e) => {
+      var xVal = e.layerX
+      var yVal = e.layerY
+      var yRotation = 20 * ((xVal - width / 2) / width)
+      var xRotation = -20 * ((yVal - height / 2) / height)
+      var string = 'perspective(500px) scale(1.1) rotateX(' + xRotation + 'deg) rotateY(' + yRotation + 'deg)'
+      el3.style.transform = string
+  })
+  el4.addEventListener('mousemove', (e) => {
+      var xVal = e.layerX
+      var yVal = e.layerY
+      var yRotation = 20 * ((xVal - width / 2) / width)
+      var xRotation = -20 * ((yVal - height / 2) / height)
+      var string = 'perspective(500px) scale(1.1) rotateX(' + xRotation + 'deg) rotateY(' + yRotation + 'deg)'
+      el4.style.transform = string
+  })
+  el5.addEventListener('mousemove', (e) => {
+      var xVal = e.layerX
+      var yVal = e.layerY
+      var yRotation = 20 * ((xVal - width / 2) / width)
+      var xRotation = -20 * ((yVal - height / 2) / height)
+      var string = 'perspective(500px) scale(1.1) rotateX(' + xRotation + 'deg) rotateY(' + yRotation + 'deg)'
+      el5.style.transform = string
+  })
+  el6.addEventListener('mousemove', (e) => {
+      var xVal = e.layerX
+      var yVal = e.layerY
+      var yRotation = 20 * ((xVal - width / 2) / width)
+      var xRotation = -20 * ((yVal - height / 2) / height)
+      var string = 'perspective(500px) scale(1.1) rotateX(' + xRotation + 'deg) rotateY(' + yRotation + 'deg)'
+      el6.style.transform = string
+  })
+
+
+/* Define function a */
+function handleMove(e) {
+  /*
+    * Get position of mouse cursor
+    * With respect to the element
+    * On mouseover
+    */
+  /* Store the x position */
+  var xVal = e.layerX
+  /* Store the y position */
+  var yVal = e.layerY
+  
+  /*
+    * Calculate rotation valuee along the Y-axis
+    * Here the multiplier 20 is to
+    * Control the rotation
+    * You can change the value and see the results
+    */
+  var yRotation = 20 * ((xVal - width / 2) / width)
+  
+  /* Calculate the rotation along the X-axis */
+  var xRotation = -20 * ((yVal - height / 2) / height)
+  
+  /* Generate string for CSS transform property */
+  var string = 'perspective(500px) scale(1.1) rotateX(' + xRotation + 'deg) rotateY(' + yRotation + 'deg)'
+  
+  /* Apply the calculated transformation */
+  el.style.transform = string
+}
+
+/* Add listener for mouseout event, remove the rotation */
+el1.addEventListener('mouseout', function() {
+  el1.style.transform = 'perspective(500px) scale(1) rotateX(0) rotateY(0)'
+})
+
+/* Add listener for mousedown event, to simulate click */
+el1.addEventListener('mousedown', function() {
+  el1.style.transform = 'perspective(500px) scale(0.9) rotateX(0) rotateY(0)'
+})
+
+/* Add listener for mouseup, simulate rel1ease of mouse click */
+el1.addEventListener('mouseup', function() {
+  el1.style.transform = 'perspective(500px) scale(1.1) rotateX(0) rotateY(0)'
+})
+
+
+el2.addEventListener('mouseout', function() {
+  el2.style.transform = 'perspective(500px) scale(1) rotateX(0) rotateY(0)'
+})
+
+/* Add listener for mousedown event, to simulate click */
+el2.addEventListener('mousedown', function() {
+  el2.style.transform = 'perspective(500px) scale(0.9) rotateX(0) rotateY(0)'
+})
+
+/* Add listener for mouseup, simulate rel1ease of mouse click */
+el2.addEventListener('mouseup', function() {
+  el2.style.transform = 'perspective(500px) scale(1.1) rotateX(0) rotateY(0)'
+})
+
+
+el3.addEventListener('mouseout', function() {
+  el3.style.transform = 'perspective(500px) scale(1) rotateX(0) rotateY(0)'
+})
+
+/* Add listener for mousedown event, to simulate click */
+el3.addEventListener('mousedown', function() {
+  el3.style.transform = 'perspective(500px) scale(0.9) rotateX(0) rotateY(0)'
+})
+
+/* Add listener for mouseup, simulate rel1ease of mouse click */
+el3.addEventListener('mouseup', function() {
+  el3.style.transform = 'perspective(500px) scale(1.1) rotateX(0) rotateY(0)'
+})
+
+el4.addEventListener('mouseout', function() {
+  el4.style.transform = 'perspective(500px) scale(1) rotateX(0) rotateY(0)'
+})
+
+/* Add listener for mousedown event, to simulate click */
+el4.addEventListener('mousedown', function() {
+  el4.style.transform = 'perspective(500px) scale(0.9) rotateX(0) rotateY(0)'
+})
+
+/* Add listener for mouseup, simulate rel1ease of mouse click */
+el4.addEventListener('mouseup', function() {
+  el4.style.transform = 'perspective(500px) scale(1.1) rotateX(0) rotateY(0)'
+})
+
+el5.addEventListener('mouseout', function() {
+  el5.style.transform = 'perspective(500px) scale(1) rotateX(0) rotateY(0)'
+})
+
+/* Add listener for mousedown event, to simulate click */
+el5.addEventListener('mousedown', function() {
+  el5.style.transform = 'perspective(500px) scale(0.9) rotateX(0) rotateY(0)'
+})
+
+/* Add listener for mouseup, simulate rel1ease of mouse click */
+el5.addEventListener('mouseup', function() {
+  el5.style.transform = 'perspective(500px) scale(1.1) rotateX(0) rotateY(0)'
+})
+
+el6.addEventListener('mouseout', function() {
+  el6.style.transform = 'perspective(500px) scale(1) rotateX(0) rotateY(0)'
+})
+
+/* Add listener for mousedown event, to simulate click */
+el6.addEventListener('mousedown', function() {
+  el6.style.transform = 'perspective(500px) scale(0.9) rotateX(0) rotateY(0)'
+})
+
+/* Add listener for mouseup, simulate rel1ease of mouse click */
+el6.addEventListener('mouseup', function() {
+  el6.style.transform = 'perspective(500px) scale(1.1) rotateX(0) rotateY(0)'
+})
+    </script>
+</body>
+</html>  -->
+
+
+
+
+
+
+
+
+
+
+<div class="accordion" id="faqSpecifications3">
+  <div class="card wow " style="margin: 0;" data-wow-duration="2s" data-wow-delay="0.2s">
+    <div class="card-header" id="heading3_1">
+      <a href="javascript:void(0)"  class="collapsed" data-toggle="collapse" data-target="#faq3_1" aria-expanded="true" aria-controls="faq1" style="width: 100%;" data-image-bx="Capmap2">
+         - ULTRA TECH
+      </a>
+    </div>
+  </div>  
+  <div class="card wow " style="margin: 0;" data-wow-duration="2s" data-wow-delay="0.4s">
+    <div class="card-header" id="heading3_2">
+      <a href="javascript:void(0)" class="collapsed" data-toggle="collapse" data-target="#faq3_2" aria-expanded="false" aria-controls="faq2" style="width: 100%;" data-image-bx="Capmap1">
+      CEMENT - M SAND/ PSAND
+      </a>
+    </div>
+  </div>  
+  <div class="card wow " style="margin: 0;" data-wow-duration="2s" data-wow-delay="0.6s">
+    <div class="card-header" id="heading3_3">
+      <a href="javascript:void(0)" class="collapsed" data-toggle="collapse" data-target="#faq3_3" aria-expanded="false" aria-controls="faq3" style="width: 100%;" data-image-bx="Capmap3">
+      SAND - 70
+      </a>
+    </div>
+  </div>  
+  <div class="card wow " style="margin: 0;" data-wow-duration="2s" data-wow-delay="0.8s">
+    <div class="card-header" id="heading3_4">
+      <a href="javascript:void(0)" class="collapsed" data-toggle="collapse" data-target="#faq3_4" aria-expanded="false" aria-controls="faq4" style="width: 100%;" data-image-bx="Capmap1">
+      TILE - WIRED CUT
+      </a>
+    </div>
+  </div>  
+  <div class="card wow " style="margin: 0;" data-wow-duration="2s" data-wow-delay="1s">
+    <div class="card-header" id="heading3_5">
+      <a href="javascript:void(0)" class="collapsed" data-toggle="collapse" data-target="#faq3_5" aria-expanded="false" aria-controls="faq5" style="width: 100%;" data-image-bx="Capmap3">
+      BRICK - LEGRAND
+      </a>
+    </div>
+  </div>  
+  <div class="card wow " style="margin: 0;" data-wow-duration="2s" data-wow-delay="1.2s">
+    <div class="card-header" id="heading3_6">
+      <a href="javascript:void(0)" class="collapsed" data-toggle="collapse" data-target="#faq3_6" aria-expanded="false" aria-controls="faq6" style="width: 100%;" data-image-bx="Capmap2">
+      SWITCH - V.GUARD
+      </a>
+    </div>
+  </div>  
+  <div class="card wow " style="margin: 0;" data-wow-duration="2s" data-wow-delay="1.4s">
+    <div class="card-header" id="heading3_7">
+      <a href="javascript:void(0)" class="collapsed" data-toggle="collapse" data-target="#faq3_7" aria-expanded="false" aria-controls="faq7" style="width: 100%;" data-image-bx="Capmap1">
+      WIRE - TATA
+      </a>
+    </div>
+  </div>  
+  <div class="card wow " style="margin: 0;" data-wow-duration="2s" data-wow-delay="1.6s">
+    <div class="card-header" id="heading3_8">
+      <a href="javascript:void(0)" class="collapsed" data-toggle="collapse" data-target="#faq3_8" aria-expanded="false" aria-controls="faq8" style="width: 100%;" data-image-bx="Capmap3">
+      STEEL - TEAKWOOD 6X4
+      </a>
+    </div>
+  </div>
+  <div class="card wow " style="margin: 0;" data-wow-duration="2s" data-wow-delay="1.8s">
+    <div class="card-header" id="heading3_9">
+      <a href="javascript:void(0)" class="collapsed" data-toggle="collapse" data-target="#faq3_9" aria-expanded="false" aria-controls="faq9" style="width: 100%;" data-image-bx="Capmap1">
+      MAIN DOOR/FRAME - JAQUAR
+      </a>
+    </div>
+  </div>  
+  <div class="card wow " style="margin: 0;" data-wow-duration="2s" data-wow-delay="2s">
+    <div class="card-header" id="heading3_10">
+      <a href="javascript:void(0)" class="collapsed" data-toggle="collapse" data-target="#faq3_10" aria-expanded="false" aria-controls="faq10" style="width: 100%;" data-image-bx="Capmap3">
+      FITTINGS - PVC
+      </a>
+    </div>
+  </div>
+  <div class="card wow " style="margin: 0;" data-wow-duration="2s" data-wow-delay="1.8s">
+    <div class="card-header" id="heading3_11">
+        <a href="javascript:void(0)" class="collapsed" data-toggle="collapse" data-target="#faq3_11" aria-expanded="false" aria-controls="faq11" style="width: 100%;" data-image-bx="Capmap1">
+        BATHROOM DOOR - COLOUR PAINT
+        </a>
+      </div>  </div>
+  <div class="card wow " style="margin: 0;" data-wow-duration="2s" data-wow-delay="1.8s">
+    <div class="card-header" id="heading3_11">
+      <a href="javascript:void(0)" class="collapsed" data-toggle="collapse" data-target="#faq3_11" aria-expanded="false" aria-controls="faq11" style="width: 100%;" data-image-bx="Capmap1">
+      PAINT - TEAK WOOD
+      </a>
+    </div>
+  </div>
+  <div class="card wow " style="margin: 0;" data-wow-duration="2s" data-wow-delay="1.8s">
+    <div class="card-header" id="heading3_12">
+      <a href="javascript:void(0)" class="collapsed" data-toggle="collapse" data-target="#faq3_12" aria-expanded="false" aria-controls="faq12" style="width: 100%;" data-image-bx="Capmap1">
+      WINDOWS - 2 COAT
+      </a>
+    </div>
+  </div>
+  <div class="card wow " style="margin: 0;" data-wow-duration="2s" data-wow-delay="1.8s">
+    <div class="card-header" id="heading3_13">
+      <a href="javascript:void(0)" class="collapsed" data-toggle="collapse" data-target="#faq3_13" aria-expanded="false" aria-controls="faq13" style="width: 100%;" data-image-bx="Capmap1">
+      PUTTY - TEAKWOOD
+      </a>
+    </div>
+  </div>
+  <div class="card wow " style="margin: 0;" data-wow-duration="2s" data-wow-delay="1.8s">
+    <div class="card-header" id="heading3_14">
+      <a href="javascript:void(0)" class="collapsed" data-toggle="collapse" data-target="#faq3_14" aria-expanded="false" aria-controls="faq14" style="width: 100%;" data-image-bx="Capmap1">
+      INNER DOOR - ASHIRVADD
+      </a>
+    </div>
+  </div>
+  <div class="card wow " style="margin: 0;" data-wow-duration="2s" data-wow-delay="1.8s">
+    <div class="card-header" id="heading3_15">
+      <a href="javascript:void(0)" class="collapsed" data-toggle="collapse" data-target="#faq3_15" aria-expanded="false" aria-controls="faq15" style="width: 100%;" data-image-bx="Capmap1">
+      PVC PIPE - STAINLESS STEEL
+      </a>
+    </div>
+  </div>
+  <div class="card wow " style="margin: 0;" data-wow-duration="2s" data-wow-delay="1.8s">
+    <div class="card-header" id="heading3_16">
+      <a href="javascript:void(0)" class="collapsed" data-toggle="collapse" data-target="#faq3_16" aria-expanded="false" aria-controls="faq16" style="width: 100%;" data-image-bx="Capmap1">
+      DOOR FITTINGS - 200 RS
+      </a>
+    </div>
+  </div>
+  <div class="card wow " style="margin: 0;" data-wow-duration="2s" data-wow-delay="1.8s">
+    <div class="card-header" id="heading3_17">
+      <a href="javascript:void(0)" class="collapsed" data-toggle="collapse" data-target="#faq3_17" aria-expanded="false" aria-controls="faq17" style="width: 100%;" data-image-bx="Capmap1">
+      GRANITE FOR KITCHEN - KITCHEN 1NOS BEDROOM 1NOS
+      </a>
+    </div>
+  </div>
+  <div class="card wow " style="margin: 0;" data-wow-duration="2s" data-wow-delay="1.8s">
+    <div class="card-header" id="heading3_18">
+      <a href="javascript:void(0)" class="collapsed" data-toggle="collapse" data-target="#faq3_18" aria-expanded="false" aria-controls="faq18" style="width: 100%;" data-image-bx="Capmap1">
+      SHELF - 2 NOS
+      </a>
+    </div>
+  </div>
+  <div class="card wow " style="margin: 0;" data-wow-duration="2s" data-wow-delay="1.8s">
+    <div class="card-header" id="heading3_19">
+      <a href="javascript:void(0)" class="collapsed" data-toggle="collapse" data-target="#faq3_19" aria-expanded="false" aria-controls="faq19" style="width: 100%;" data-image-bx="Capmap1">
+      WASH BASIN / FLOOR - 1000 LITRE 2 NOS
+      </a>
+    </div>
+  </div>
+  <div class="card wow " style="margin: 0;" data-wow-duration="2s" data-wow-delay="1.8s">
+    <div class="card-header" id="heading3_20">
+      <a href="javascript:void(0)" class="collapsed" data-toggle="collapse" data-target="#faq3_20" aria-expanded="false" aria-controls="faq20" style="width: 100%;" data-image-bx="Capmap1">
+      WATER TANK - ONLY ELEVATION
+      </a>
+    </div>
+  </div>
+  <div class="card wow " style="margin: 0;" data-wow-duration="2s" data-wow-delay="1.8s">
+    <div class="card-header" id="heading3_21">
+      <a href="javascript:void(0)" class="collapsed" data-toggle="collapse" data-target="#faq3_21" aria-expanded="false" aria-controls="faq21" style="width: 100%;" data-image-bx="Capmap1">
+      WALL PUTTY OUTER WALL - 4000 LITRE
+      </a>
+    </div>
+  </div>
+  <div class="card wow " style="margin: 0;" data-wow-duration="2s" data-wow-delay="1.8s">
+    <div class="card-header" id="heading3_22">
+      <a href="javascript:void(0)" class="collapsed" data-toggle="collapse" data-target="#faq3_22" aria-expanded="false" aria-controls="faq22" style="width: 100%;" data-image-bx="Capmap1">
+      SUMP - STAINLESS STEEL WITH GLASS
+      </a>
+    </div>
+  </div>
+  <div class="card wow " style="margin: 0;" data-wow-duration="2s" data-wow-delay="1.8s">
+    <div class="card-header" id="heading3_23">
+      <a href="javascript:void(0)" class="collapsed" data-toggle="collapse" data-target="#faq3_23" aria-expanded="false" aria-controls="faq23" style="width: 100%;" data-image-bx="Capmap1">
+      HAND RAILS INNER - ADDITIONAL
+      </a>
+    </div>
+  </div>
+  <div class="card wow " style="margin: 0;" data-wow-duration="2s" data-wow-delay="1.8s">
+    <div class="card-header" id="heading3_24">
+      <a href="javascript:void(0)" class="collapsed" data-toggle="collapse" data-target="#faq3_24" aria-expanded="false" aria-controls="faq24" style="width: 100%;" data-image-bx="Capmap1">
+      LAND FILLING - INCLUDED
+      </a>
+    </div>
+  </div>
+  <div class="card wow " style="margin: 0;" data-wow-duration="2s" data-wow-delay="1.8s">
+    <div class="card-header" id="heading3_25">
+      <a href="javascript:void(0)" class="collapsed" data-toggle="collapse" data-target="#faq3_25" aria-expanded="false" aria-controls="faq25" style="width: 100%;" data-image-bx="Capmap1">
+      CAMERA LINE&INVERTOR - INCLUDED
+      </a>
+    </div>
+  </div>
+  <div class="card wow " style="margin: 0;" data-wow-duration="2s" data-wow-delay="1.8s">
+    <div class="card-header" id="heading3_26">
+      <a href="javascript:void(0)" class="collapsed" data-toggle="collapse" data-target="#faq3_26" aria-expanded="false" aria-controls="faq26" style="width: 100%;" data-image-bx="Capmap1">
+      SUMP AND TANK - INCLUDED
+      </a>
+    </div>
+  </div>
+  <div class="card wow " style="margin: 0;" data-wow-duration="2s" data-wow-delay="1.8s">
+    <div class="card-header" id="heading3_27">
+      <a href="javascript:void(0)" class="collapsed" data-toggle="collapse" data-target="#faq3_27" aria-expanded="false" aria-controls="faq27" style="width: 100%;" data-image-bx="Capmap1">
+      ELEVATIOIN - ADDITIONAL
+      </a>
+    </div>
+  </div>
+  <div class="card wow " style="margin: 0;" data-wow-duration="2s" data-wow-delay="1.8s">
+    <div class="card-header" id="heading3_28">
+      <a href="javascript:void(0)" class="collapsed" data-toggle="collapse" data-target="#faq3_28" aria-expanded="false" aria-controls="faq28" style="width: 100%;" data-image-bx="Capmap1">
+      BORE - ADDITIONAL
+      </a>
+    </div>
+  </div>
+  <div class="card wow " style="margin: 0;" data-wow-duration="2s" data-wow-delay="1.8s">
+    <div class="card-header" id="heading3_29">
+      <a href="javascript:void(0)" class="collapsed" data-toggle="collapse" data-target="#faq3_29" aria-expanded="false" aria-controls="faq29" style="width: 100%;" data-image-bx="Capmap1">
+      COMPOUND WALL - 6000 RS
+      </a>
+    </div>
+  </div>
+</div>
+
