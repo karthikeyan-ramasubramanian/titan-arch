@@ -20583,7 +20583,7 @@
    padding: 0;
    color: #efbb20;
    margin-top: 0;
-   margin-bottom: 0;
+   margin-bottom: 30px;
    margin-left: 0;
    margin-right: 0;
    width: auto;
@@ -20608,6 +20608,7 @@
  .logo-header img {
    height: 125px;
    width: auto;
+   margin-top: 40px;
  }
  .logo-header span {
    font-size: 20px;
